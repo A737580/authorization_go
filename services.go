@@ -30,7 +30,7 @@ type TokenPair struct {
 }
 
 type CustomClaims struct {
-	UserID      uuid.UUID `json:"user_id"`
+	UserID      uuid.UUID `json:"user_id" example:"123e4567-e89b-12d3-a456-426614174000" default:"123e4567-e89b-12d3-a456-426614174000"`
 	TokenPairID uuid.UUID `json:"token_pair_id"`
 	jwt.RegisteredClaims
 }

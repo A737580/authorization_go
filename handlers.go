@@ -22,10 +22,11 @@ func NewAuthHandlers(service AuthService) *AuthHandlers {
 // GenerateTokensHandler
 // @Summary Generate new access and refresh tokens
 // @Description Generates a new pair of access and refresh tokens for a given user ID.
+// @Param  user_id  path string true "ID пользователя" default(123e4567-e89b-12d3-a456-426614174000)
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Success 200 {object} TokenPair "Successfully generated tokens"
+// @Success 200 {object} TokenPair "Successfully generated tokens" --> user_id example(123e4567-e89b-12d3-a456-426614174000)
 // @Failure 400 {object} ErrorResponse "Invalid request payload or User ID format"
 // @Failure 500 {object} ErrorResponse "Failed to generate tokens"
 // @Router /auth/generate [post]

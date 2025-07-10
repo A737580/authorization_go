@@ -38,7 +38,7 @@ const docTemplate = `{
                 "summary": "Verify Access Token",
                 "responses": {
                     "401": {
-                        "description": "Authorization header required or invalid token\" // \u003c--- ИЗМЕНЕНО",
+                        "description": "Authorization header required or invalid token",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
@@ -61,6 +61,14 @@ const docTemplate = `{
                 "summary": "Generate new access and refresh tokens",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "123e4567-e89b-12d3-a456-426614174000",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "User ID for whom tokens are generated",
                         "name": "request",
                         "in": "body",
@@ -72,7 +80,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully generated tokens",
+                        "description": "Successfully generated tokens\" --\u003e user_id example(123e4567-e89b-12d3-a456-426614174000)",
                         "schema": {
                             "$ref": "#/definitions/main.TokenPair"
                         }
@@ -124,19 +132,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid request payload\"  // \u003c--- ИЗМЕНЕНО",
+                        "description": "Invalid request payload",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
                     },
                     "401": {
-                        "description": "Authentication failed (invalid, revoked, or expired token/user agent mismatch)\" // \u003c--- ИЗМЕНЕНО",
+                        "description": "Authentication failed (invalid, revoked, or expired token/user agent mismatch)",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to refresh tokens\" // \u003c--- ИЗМЕНЕНО",
+                        "description": "Failed to refresh tokens",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
@@ -170,19 +178,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "All tokens for user revoked successfully\" // \u003c--- ИЗМЕНЕНО",
+                        "description": "All tokens for user revoked successfully",
                         "schema": {
                             "$ref": "#/definitions/main.MessageResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid request payload or User ID format\"  // \u003c--- ИЗМЕНЕНО",
+                        "description": "Invalid request payload or User ID format",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to revoke tokens\"             // \u003c--- ИЗМЕНЕНО",
+                        "description": "Failed to revoke tokens",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
@@ -207,19 +215,19 @@ const docTemplate = `{
                 "summary": "Get current user's GUID",
                 "responses": {
                     "200": {
-                        "description": "User ID retrieved successfully\" // \u003c--- ИЗМЕНЕНО",
+                        "description": "User ID retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/main.UserIDResponse"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized\"                    // \u003c--- ИЗМЕНЕНО",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal server error\"           // \u003c--- ИЗМЕНЕНО",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/main.ErrorResponse"
                         }
@@ -292,7 +300,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "refreshToken": {
-                    "description": "refresh-токен в Base64",
                     "type": "string"
                 }
             }

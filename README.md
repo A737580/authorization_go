@@ -72,7 +72,7 @@ POST   /auth/generate                   # Получение пары access/ref
 POST   /auth/refresh                    # Обновление пары токенов
 POST   /auth/revoke                     # Деавторизация пользователя
 GET    /auth/me                         # Получение GUID текущего пользователя (access required)
-GET    /swagger/                        # Документация swagger
+GET    /swagger/index.html#/            # Документация swagger
 ```
 ## Запуск проекта
 
