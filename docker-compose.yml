@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/ 
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U user -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth-service: 
+    build:
+      context: . 
+      dockerfile: Dockerfile 
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      APP_PORT: 8080
+      DATABASE_URL: "postgres://user:password@db:5432/auth_db?sslmode=disable" 
+      PORT: 8080 
+      JWT_SECRET: "LWHun9B1Hr77ZLQVoURq4+g76KTiIYO+6yTQGjZzKWQ=" 
+      WEBHOOK_NOTIFICATION_URL: "http://localhost:3030/logs"
+    depends_on:
+      db:
+        condition: service_healthy 
+
+volumes:
+  db_data:

@@ -1,0 +1,311 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample authentication service API.",
+        "title": "Auth Service API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/some-protected-route": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This middleware checks the Authorization header for a valid Bearer token.",
+                "tags": [
+                    "middleware"
+                ],
+                "summary": "Verify Access Token",
+                "responses": {
+                    "401": {
+                        "description": "Authorization header required or invalid token\" // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/generate": {
+            "post": {
+                "description": "Generates a new pair of access and refresh tokens for a given user ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Generate new access and refresh tokens",
+                "parameters": [
+                    {
+                        "description": "User ID for whom tokens are generated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.GenerateTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully generated tokens",
+                        "schema": {
+                            "$ref": "#/definitions/main.TokenPair"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload or User ID format",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to generate tokens",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "description": "Refreshes the token pair using an old access token and refresh token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh access and refresh tokens",
+                "parameters": [
+                    {
+                        "description": "Token refresh request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.RefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully refreshed tokens",
+                        "schema": {
+                            "$ref": "#/definitions/main.TokenPair"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload\"  // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed (invalid, revoked, or expired token/user agent mismatch)\" // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to refresh tokens\" // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/revoke": {
+            "post": {
+                "description": "Revokes all active refresh tokens for the specified user ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Revoke all refresh tokens for a user",
+                "parameters": [
+                    {
+                        "description": "User ID whose tokens are to be revoked",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.RevokeTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All tokens for user revoked successfully\" // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload or User ID format\"  // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to revoke tokens\"             // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the GUID of the currently authenticated user.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get current user's GUID",
+                "responses": {
+                    "200": {
+                        "description": "User ID retrieved successfully\" // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.UserIDResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized\"                    // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error\"           // \u003c--- ИЗМЕНЕНО",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.GenerateTokenRequest": {
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "access_token",
+                "refresh_token"
+            ],
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.RevokeTokenRequest": {
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.TokenPair": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "description": "refresh-токен в Base64",
+                    "type": "string"
+                }
+            }
+        },
+        "main.UserIDResponse": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" then a space and your JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -1,0 +1,206 @@
+basePath: /
+definitions:
+  main.ErrorResponse:
+    properties:
+      details:
+        type: string
+      error:
+        type: string
+    type: object
+  main.GenerateTokenRequest:
+    properties:
+      user_id:
+        type: string
+    required:
+    - user_id
+    type: object
+  main.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  main.RefreshTokenRequest:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    required:
+    - access_token
+    - refresh_token
+    type: object
+  main.RevokeTokenRequest:
+    properties:
+      user_id:
+        type: string
+    required:
+    - user_id
+    type: object
+  main.TokenPair:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        description: refresh-токен в Base64
+        type: string
+    type: object
+  main.UserIDResponse:
+    properties:
+      user_id:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample authentication service API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Auth Service API
+  version: "1.0"
+paths:
+  /api/v1/some-protected-route:
+    get:
+      description: This middleware checks the Authorization header for a valid Bearer
+        token.
+      responses:
+        "401":
+          description: Authorization header required or invalid token" // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Verify Access Token
+      tags:
+      - middleware
+  /auth/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generates a new pair of access and refresh tokens for a given user
+        ID.
+      parameters:
+      - description: User ID for whom tokens are generated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.GenerateTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully generated tokens
+          schema:
+            $ref: '#/definitions/main.TokenPair'
+        "400":
+          description: Invalid request payload or User ID format
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "500":
+          description: Failed to generate tokens
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Generate new access and refresh tokens
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refreshes the token pair using an old access token and refresh
+        token.
+      parameters:
+      - description: Token refresh request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully refreshed tokens
+          schema:
+            $ref: '#/definitions/main.TokenPair'
+        "400":
+          description: Invalid request payload"  // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "401":
+          description: Authentication failed (invalid, revoked, or expired token/user
+            agent mismatch)" // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "500":
+          description: Failed to refresh tokens" // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Refresh access and refresh tokens
+      tags:
+      - auth
+  /auth/revoke:
+    post:
+      consumes:
+      - application/json
+      description: Revokes all active refresh tokens for the specified user ID.
+      parameters:
+      - description: User ID whose tokens are to be revoked
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.RevokeTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All tokens for user revoked successfully" // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.MessageResponse'
+        "400":
+          description: Invalid request payload or User ID format"  // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "500":
+          description: Failed to revoke tokens"             // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Revoke all refresh tokens for a user
+      tags:
+      - admin
+  /user/me:
+    get:
+      description: Returns the GUID of the currently authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User ID retrieved successfully" // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.UserIDResponse'
+        "401":
+          description: Unauthorized"                    // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+        "500":
+          description: Internal server error"           // <--- ИЗМЕНЕНО
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user's GUID
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" then a space and your JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
