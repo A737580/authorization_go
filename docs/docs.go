@@ -48,7 +48,7 @@ const docTemplate = `{
         },
         "/auth/generate": {
             "post": {
-                "description": "Generates a new pair of access and refresh tokens for a given user ID.",
+                "description": "Generates a new pair of access and refresh tokens for a given user ID.\n**Пример user_id для тестирования:** ` + "`" + `123e4567-e89b-12d3-a456-426614174000` + "`" + `",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,14 +61,6 @@ const docTemplate = `{
                 "summary": "Generate new access and refresh tokens",
                 "parameters": [
                     {
-                        "type": "string",
-                        "default": "123e4567-e89b-12d3-a456-426614174000",
-                        "description": "ID пользователя",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "User ID for whom tokens are generated",
                         "name": "request",
                         "in": "body",
@@ -80,7 +72,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully generated tokens\" --\u003e user_id example(123e4567-e89b-12d3-a456-426614174000)",
+                        "description": "Successfully generated tokens",
                         "schema": {
                             "$ref": "#/definitions/main.TokenPair"
                         }
