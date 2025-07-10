@@ -30,7 +30,7 @@
 | Docker Compose с запуском одной командой | ✅ |
 
 ## Структура проекта
-
+```txt
 authorization_go/
 ├── handlers/            # Логика обработки HTTP-запросов
 ├── docs/                # Swagger-документация
@@ -43,7 +43,7 @@ authorization_go/
 ├── go.mod               # Go-модуль
 ├── docker-compose.yml   # Конфигурация Docker Compose
 └── README.md            # Документация проекта
-
+```
 
 ## База данных
 
